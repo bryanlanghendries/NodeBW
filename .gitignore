@@ -1,0 +1,17 @@
+node_modules/
+logs
+*.log
+.pnpm
+*.pnp.js
+.idea/
+.vscode/
+.env
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+/build/Release
+*.tgz
+yarn-error.log
+.pnp/
+!yarn.lock
