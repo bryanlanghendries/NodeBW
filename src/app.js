@@ -8,11 +8,7 @@ const PORT = process.env.PORT || 3000;
 // MongoDB connection
 const mongoURI = process.env.MONGODB_URI;
 
-mongoose.connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-});
+mongoose.connect(mongoURI);
 
 // Middleware
 app.use(express.json());
