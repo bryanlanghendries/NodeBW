@@ -17,4 +17,7 @@ router.put('/:id', userController.updateUser);
 // Delete a user by ID
 router.delete('/:id', userController.deleteUser);
 
+// Route for searching users by first name
+router.get('/users/search', userController.searchUsersByFirstName);
+
 module.exports = router;
