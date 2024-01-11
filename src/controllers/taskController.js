@@ -70,11 +70,6 @@ exports.updateTask = async (req, res) => {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        // If 'completed' is provided in the request body, update the status
-        if (completed !== undefined) {
-            existingTask.completed = completed;
-        }
-
         // Update other fields
         existingTask.title = title;
         existingTask.description = description;
@@ -103,6 +98,24 @@ exports.deleteTask = async (req, res) => {
         }
 
         res.status(204).send();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// Set a task to completed
+exports.completeTask = async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        const updatedTask = await Task.findByIdAndUpdate(taskId, { completed: true }, { new: true });
+
+        if (!updatedTask) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+
+        res.status(200).json(updatedTask);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

@@ -17,4 +17,7 @@ router.put('/:id', taskController.updateTask);
 // Delete a task by ID
 router.delete('/:id', taskController.deleteTask);
 
+// Set a task to completed
+router.put('/:id/complete', taskController.completeTask);
+
 module.exports = router;
