@@ -4,9 +4,16 @@ const User = require('../models/User');
 exports.createUser = async (req, res) => {
     try {
         const { firstName, lastName } = req.body;
-        
+
         if (!firstName || !lastName) {
             return res.status(400).json({ error: 'First name and last name are required.' });
+        }
+
+        // Check if a user with the same first and last name already exists
+        const existingUser = await User.findOne({ firstName, lastName });
+
+        if (existingUser) {
+            return res.status(400).json({ error: 'User with the same name already exists.' });
         }
 
         const newUser = new User({
@@ -55,27 +62,24 @@ exports.getUserById = async (req, res) => {
 // Update a user by ID
 exports.updateUser = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const { id } = req.params;
         const { firstName, lastName } = req.body;
 
-        if (!firstName || !lastName) {
-            return res.status(400).json({ error: 'First name and last name are required.' });
+        // Check if a user with the new name already exists
+        const existingUser = await User.findOne({ firstName, lastName });
+        if (existingUser) {
+            return res.status(400).json({ error: 'A user with this name already exists.' });
         }
 
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { firstName, lastName },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedUser) {
-            return res.status(404).json({ error: 'User not found' });
+        const user = await User.findByIdAndUpdate(id, { firstName, lastName }, { new: true });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found.' });
         }
 
-        res.status(200).json(updatedUser);
+        res.status(200).json(user);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error.' });
     }
 };
 
@@ -97,20 +101,4 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-exports.searchUsersByFirstName = async (req, res) => {
-    try {
-        const { firstName } = req.query;
-
-        if (!firstName) {
-            return res.status(400).json({ error: 'First name is required for searching.' });
-        }
-
-        const users = await User.find({ firstName });
-
-        res.status(200).json(users);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
 
